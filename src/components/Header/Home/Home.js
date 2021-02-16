@@ -8,15 +8,14 @@ const Home = () => {
     useEffect(() => {
         fetch('https://jsonplaceholder.typicode.com/posts')
             .then(res => res.json())
-            .then(data =>
-                setPostData(data))
-        // console.log(data));
+            .then(data => setPostData(data))
+
     }, [])
-    console.log(postData)
+   
     return (
         <div>
             {
-              postData.map(pd => <AllPost pd={pd}></AllPost>)  
+                postData.map(pd => <AllPost pd={pd}></AllPost>)
             }
         </div>
 

@@ -5,19 +5,37 @@ import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
-import {useParams } from 'react-router-dom';
+import {useHistory, useParams } from 'react-router-dom';
+import Comments from '../Comments/Comments';
+import { useContext } from 'react';
+import { UserContext } from '../../App';
 
-const PostDetails = () => {
-    const {postId} = useParams();
+
+
+const PostDetails = (props) => {
+    const {PostId} = useParams();
 
     const [dataId, setDataId] = useState({});
+    const [commentId, setCommentId] = useState([]);
     
     useEffect( () =>{
-        fetch(`https://jsonplaceholder.typicode.com/posts/${postId}`)
+        fetch(`https://jsonplaceholder.typicode.com/posts/${PostId}`)
         .then(res => res.json())
         .then(dataDetails => setDataId(dataDetails))
+
+        fetch('https://jsonplaceholder.typicode.com/comments')
+        .then(res => res.json())
+        .then(data => setCommentId(data));
+
     },[])
-    
+   
+    //for comments
+    const history = useHistory();
+    const handleComments = (cId) => {
+        const url = `/comments/${cId}`; 
+        history.push(url);
+    }
+
     const useStyles = makeStyles({
         root: {
             maxWidth: 345,
@@ -28,11 +46,9 @@ const PostDetails = () => {
     });
 
     const classes = useStyles();
-
    
-
     return (
-        <div>
+        
            <Card className={classes.root}>
                     <CardContent>
                         <Typography gutterBottom variant="h5" component="h2">
@@ -49,12 +65,15 @@ const PostDetails = () => {
           </Typography>
                     </CardContent>
                 <CardActions>
-                    <Button  size="small" color="secondary" variant="contained" >
+                    <Button onClick={() => handleComments(dataId.userId)} size="small" color="secondary" variant="contained" >
                         Comments
                     </Button>
                 </CardActions>
+                <div>
+                 {commentId.map(id => <Comments id = {id}></Comments>)}
+                </div>
             </Card>
-        </div>
+       
     );
 };
 
